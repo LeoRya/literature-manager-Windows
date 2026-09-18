@@ -60,6 +60,17 @@ if (-not (Test-Path -LiteralPath (Join-Path $AppDir "LiteratureManager.exe"))) {
     throw "Windows 可执行文件构建失败。"
 }
 
+$ReleaseFiles = @(
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
+    "SOURCE_CODE.txt"
+)
+foreach ($ReleaseFile in $ReleaseFiles) {
+    Copy-Item -LiteralPath (Join-Path $ProjectDir $ReleaseFile) -Destination $AppDir -Force
+}
+Copy-Item -LiteralPath (Join-Path $ProjectDir "licenses") -Destination $AppDir -Recurse -Force
+
 if (Test-Path -LiteralPath $ZipPath) {
     Remove-Item -LiteralPath $ZipPath -Force
 }

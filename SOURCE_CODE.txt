@@ -1,0 +1,11 @@
+Literature Manager for Windows - Corresponding Source Code
+
+The complete corresponding source code for this release, including build scripts,
+is available from:
+
+https://github.com/LeoRya/literature-manager-Windows
+
+Release tag: v0.1.1-windows
+
+Build instructions are in README.md and build_windows.ps1.
+The application is licensed under the GNU Affero General Public License v3.0.

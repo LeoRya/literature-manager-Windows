@@ -60,3 +60,7 @@ Windows 默认数据库位于 `%LOCALAPPDATA%\LiteratureManager\paper_library.db
 - `dist\LiteratureManager-Windows-x64.zip`：可分发压缩包
 
 仓库中的 GitHub Actions 工作流也会在推送 `v*` 标签或手动触发时构建 Windows x64 压缩包。
+
+## 许可证
+
+本项目以 [GNU Affero General Public License v3.0](LICENSE) 发布。Windows 发行包同时包含第三方组件；相应许可证与来源见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
