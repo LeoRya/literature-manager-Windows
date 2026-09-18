@@ -1,14 +1,17 @@
 import shutil
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 import fitz
 
 from literature_manager.database import Database
+from literature_manager.config import default_database_path
 from literature_manager.import_export import export_file, import_file
 from literature_manager.scanner import LibraryScanner
 from literature_manager.search import SearchCondition, SearchService
+from literature_manager.system_integration import reveal_command, reveal_in_file_manager
 
 
 def make_pdf(path: Path, text: str) -> None:
@@ -107,6 +110,41 @@ class CoreTests(unittest.TestCase):
             self.assertEqual(import_file(target, path), (1, 0))
             imported = target.get_paper(target.all_paper_ids()[0])
             self.assertEqual(imported["doi"], "10.1234/test")
+
+    def test_windows_database_defaults_to_local_app_data(self):
+        project = self.folder / "clean-checkout"
+        project.mkdir()
+        path = default_database_path(
+            "win32", {"LOCALAPPDATA": str(self.folder / "LocalAppData")}, project
+        )
+        self.assertEqual(
+            path,
+            self.folder / "LocalAppData" / "LiteratureManager" / "paper_library.db",
+        )
+
+    def test_database_environment_override_has_priority(self):
+        override = self.folder / "custom" / "papers.db"
+        self.assertEqual(
+            default_database_path(
+                "win32", {"LITERATURE_MANAGER_DB": str(override)}, self.folder
+            ),
+            override,
+        )
+
+    def test_windows_reveal_uses_explorer_select(self):
+        pdf = self.folder / "中文 folder" / "paper name.pdf"
+        command = reveal_command(pdf, "win32")
+        self.assertEqual(command[0], "explorer.exe")
+        self.assertTrue(command[1].startswith("/select,"))
+        self.assertIn("paper name.pdf", command[1])
+
+    @patch("literature_manager.system_integration.subprocess.Popen")
+    def test_reveal_does_not_use_a_shell(self, popen):
+        pdf = self.folder / "paper.pdf"
+        reveal_in_file_manager(pdf)
+        args, kwargs = popen.call_args
+        self.assertIsInstance(args[0], list)
+        self.assertNotIn("shell", kwargs)
 
 
 if __name__ == "__main__":

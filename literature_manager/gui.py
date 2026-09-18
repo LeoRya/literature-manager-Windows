@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import html
 import queue
-import subprocess
 import sys
 import threading
 from pathlib import Path
@@ -44,6 +43,7 @@ from .database import Database
 from .import_export import export_file, import_file
 from .scanner import LibraryScanner
 from .search import FIELDS, SearchCondition, SearchService
+from .system_integration import reveal_in_file_manager
 
 
 STATUS_LABELS = {"ready": "已识别", "review": "待确认", "error": "识别失败"}
@@ -564,12 +564,7 @@ class MainWindow(QMainWindow):
         if not path:
             return
         try:
-            if sys.platform == "darwin":
-                subprocess.Popen(["open", "-R", str(path)])
-            elif sys.platform == "win32":
-                subprocess.Popen(["explorer", "/select,", str(path)])
-            else:
-                subprocess.Popen(["xdg-open", str(path.parent)])
+            reveal_in_file_manager(path)
         except OSError as exc:
             QMessageBox.warning(self, "无法显示文件", str(exc))
 

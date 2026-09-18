@@ -1,7 +1,11 @@
 .venv/
+.venv-win-build/
 __pycache__/
 *.py[cod]
 .DS_Store
+build/
+dist/
+*.spec
 paper_library.db
 paper_library.db-wal
 paper_library.db-shm
